@@ -31,7 +31,7 @@ def append_sum_row_label(df):
     df.loc['Total'] = df.sum(numeric_only=True)
     return df
 
-def sumCSVdata(df, presenters, commentColumn):
+def sumCSVdata(df, presenters, commentColumn, questions):
     """
     - 発表者ごとに行を作成
     - columnごとにsum
@@ -39,23 +39,41 @@ def sumCSVdata(df, presenters, commentColumn):
     """
     sums = []
     comments = []
+    d = {}
+    for presenter in presenters:
+        d.update({presenter:{}})
+    
     i = 0
     for column_name, item in df.iteritems():
+        dot = (column_name.find('.'))
+        # print(dot)
+
+        if dot!=-1:
+            column_name = column_name[:dot]
+        # print(column_name)
+        if column_name not in questions:
+            continue
+
         if commentColumn in column_name:
             text = ""
             # print(item)
             for comment in item:
-                text += f'- {comment}\n'
+                text += f'- {comment}\t'
             comments.append(text)
 
             presenter = presenters[i]
-            print(f'{presenter}: {column_name}::\n{text}')
+            # print(f'{presenter}: {column_name}::\n{text}')
+            d[presenter][column_name]=text
             i += 1
         else:
             presenter = presenters[i]
             tmp = df[column_name].sum()
             sums.append(tmp)
-            print(f'{presenter}: {column_name}::{tmp}')
+            # print(f'{presenter}: {column_name}::{tmp}')
+            d[presenter][column_name]=tmp
     # print(sums)
-    print(comments)
-    
+    # print(comments)
+    # print(d)
+    df = pd.DataFrame(d.values(), index=d.keys())
+    print(df)
+    df.to_csv('data/result.csv',encoding='cp932')

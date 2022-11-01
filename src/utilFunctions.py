@@ -36,7 +36,7 @@ def checkOAuth():
 
 def createForm(form_service, title, file_name):
     """
-    - フォームの先頭部分を作成
+    - フォームの先頭部分を作成（createではdiscriptionは追加できない）
     """
     # Request body for creating a form
     NEW_FORM = {
@@ -52,7 +52,7 @@ def createForm(form_service, title, file_name):
 
 def updateForm(form_service, title, file_name, description, result):
     """
-    - フォームの先頭部分をupdate
+    - フォームの先頭部分を更新（discriptionを追加）
     """
     # Request body for updating a form
     NEW_FORM = {
@@ -176,5 +176,3 @@ def scaleQuestion(form_service, idx, title, result):
 
     # Adds the question to the form
     question_setting = form_service.forms().batchUpdate(formId=result["formId"], body=NEW_QUESTION).execute()
-
-
