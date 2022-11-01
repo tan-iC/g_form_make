@@ -50,6 +50,28 @@ def createForm(form_service, title, file_name):
     return result
 
 
+def updateForm(form_service, title, file_name, description, result):
+    """
+    - フォームの先頭部分をupdate
+    """
+    # Request body for updating a form
+    NEW_FORM = {
+        "requests": [{
+            "updateFormInfo": {
+                "info": {
+                    "title": title,
+                    "documentTitle": file_name,
+                    "description": description,
+                },
+                "updateMask": "*"
+            }
+        }]
+    }
+
+    # Updates the form
+    question_setting = form_service.forms().batchUpdate(formId=result["formId"], body=NEW_FORM).execute()
+
+
 ###
 # 2. 
 ###

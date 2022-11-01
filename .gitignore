@@ -4,9 +4,10 @@ ec2*
 token*
 gmail*
 sales*
-information.csv
+*.csv
 /logs
 quickstart.py
 get_csv_data.py
 test.py
 my_form*.py
+formId.txt
