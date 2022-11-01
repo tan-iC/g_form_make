@@ -1,5 +1,6 @@
 from    __future__      import print_function
-from    utilFunctions     import checkOAuth, createForm, sectionStart, scaleQuestion, textQuestion
+from    utilFunctions   import checkOAuth, createForm, sectionStart, scaleQuestion, textQuestion
+from    dataFunctions   import getCSVdata
 import  os
 import  sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
