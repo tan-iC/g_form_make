@@ -4,3 +4,7 @@ ec2*
 token*
 gmail*
 sales*
+information.csv
+/logs
+quickstart.py
+get_csv_data.py

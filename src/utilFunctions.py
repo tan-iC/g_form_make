@@ -1,52 +1,64 @@
-from __future__ import print_function
+from    __future__      import print_function
 
-from apiclient import discovery
-from httplib2 import Http
-from oauth2client import client, file, tools
+from    apiclient       import discovery
+from    httplib2        import Http
+from    oauth2client    import client, file, tools
+import  pandas          as pd
+import  os
+import  sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-SCOPES = "https://www.googleapis.com/auth/forms.body"
-DISCOVERY_DOC = "https://forms.googleapis.com/$discovery/rest?version=v1"
+###
+# 0.
+###
 
-store = file.Storage('token.json')
-creds = None
-if not creds or creds.invalid:
-    flow = client.flow_from_clientsecrets('client_secret_221031.json', SCOPES)
-    creds = tools.run_flow(flow, store)
+def checkOAuth():
+    """
+    - OAuth認証
+    - サーバへアクセス
+    """
+    SCOPES = "https://www.googleapis.com/auth/forms.body"
+    DISCOVERY_DOC = "https://forms.googleapis.com/$discovery/rest?version=v1"
 
-form_service = discovery.build('forms', 'v1', http=creds.authorize(
-    Http()), discoveryServiceUrl=DISCOVERY_DOC, static_discovery=False)
+    store = file.Storage('data/token.json')
+    creds = None
+    if not creds or creds.invalid:
+        flow = client.flow_from_clientsecrets('data/client_secret_221031.json', SCOPES)
+        creds = tools.run_flow(flow, store)
+
+    form_service = discovery.build('forms', 'v1', http=creds.authorize(
+        Http()), discoveryServiceUrl=DISCOVERY_DOC, static_discovery=False)
+    return form_service
 
 ###
 # 1. 
 ###
 
-form_descripition =\
-"""2022/11/30\n
-Comment sheet about the 2nd midterm presentation\n
-第二回中間発表に関するコメントシート"""
-
-# Request body for creating a form
-NEW_FORM = {
-    "info": {
-        "title": "第二回中間発表",
-        "documentTitle": 'form_221101',
+def createForm(form_service, title, file_name):
+    """
+    - フォームの先頭部分を作成
+    """
+    # Request body for creating a form
+    NEW_FORM = {
+        "info": {
+            "title": title,
+            "documentTitle": file_name,
+        }
     }
-}
+    # Creates the initial form
+    result = form_service.forms().create(body=NEW_FORM).execute()
+    return result
 
-# Creates the initial form
-result = form_service.forms().create(body=NEW_FORM).execute()
 
 ###
 # 2. 
 ###
 
-section_description =\
-"""If you are the presenter himself/herself, 
-or if you were not able to attend, please enter 0.\n
-発表者自身の場合、聴講できなかった場合は、0を記入してください。"""
-
-
 def sectionStart(form_service, idx, title, description, result):
+    """
+    - セクションを作成
+    - その他のItemと同じ扱い
+    """
     NEW_QUESTION = {
         "requests": [{
             "createItem": {
@@ -71,7 +83,11 @@ def sectionStart(form_service, idx, title, description, result):
     # Adds the question to the form
     question_setting = form_service.forms().batchUpdate(formId=result["formId"], body=NEW_QUESTION).execute()
 
+
 def textQuestion(form_service, idx, title, result):
+    """
+    - 記述回答を求める質問を作成
+    """
     NEW_QUESTION = {
         "requests": [{
             "createItem": {
@@ -102,7 +118,11 @@ def textQuestion(form_service, idx, title, result):
     # Adds the question to the form
     question_setting = form_service.forms().batchUpdate(formId=result["formId"], body=NEW_QUESTION).execute()
 
+
 def scaleQuestion(form_service, idx, title, result):
+    """
+    - 均等目盛りの質問を作成
+    """
     NEW_QUESTION = {
         "requests": [{
             "createItem": {
@@ -136,45 +156,3 @@ def scaleQuestion(form_service, idx, title, result):
     question_setting = form_service.forms().batchUpdate(formId=result["formId"], body=NEW_QUESTION).execute()
 
 
-# presenters
-presenters = [
-    "A",
-    "B",
-    "C"
-    ]
-
-# questions
-questions = [
-    "Research progress: 研究の進捗",
-    "Presentation quality: プレゼンの質",
-    "Q&A quality: 質疑応答の質",
-    "Resume quality: レジュメの質",
-    "Comment: コメント"
-    ]
-
-idx = 0
-for i, person in enumerate(presenters):
-
-    sectionStart(
-        form_service, 
-        idx, 
-        f'{person}さん', 
-        section_description,
-        result)
-    
-    # incliment
-    idx += 1
-
-    for j, question in enumerate(questions):
-        if question==questions[-1]:
-            textQuestion(form_service, idx, question, result)
-        else:
-            scaleQuestion(form_service, idx, question, result)
-        
-        # incliment
-        idx+=1
-
-
-# Prints the result to show the question has been added
-get_result = form_service.forms().get(formId=result["formId"]).execute()
-print(get_result)
