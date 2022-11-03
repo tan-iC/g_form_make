@@ -84,6 +84,3 @@ for i, (presenter, grade, team) in enumerate(zip(presenters, grades, teams)):
 # Prints the result to show the question has been added
 get_result = form_service.forms().get(formId=result["formId"]).execute()
 print(get_result)
-
-with open("data/formId.txt", mode='a') as f:
-    f.write(get_result)
