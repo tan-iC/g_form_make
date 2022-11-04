@@ -50,7 +50,7 @@ def createForm(form_service, title, file_name):
     return result
 
 
-def updateForm(form_service, title, file_name, description, result):
+def updateForm(form_service, result, title, file_name, description=''):
     """
     - フォームの先頭部分を更新（discriptionを追加）
     """
@@ -76,7 +76,7 @@ def updateForm(form_service, title, file_name, description, result):
 # 2. 
 ###
 
-def sectionStart(form_service, idx, title, description, result):
+def sectionStart(form_service, idx, result, title, description=''):
     """
     - セクションを作成
     - その他のItemと同じ扱い
@@ -106,7 +106,15 @@ def sectionStart(form_service, idx, title, description, result):
     question_setting = form_service.forms().batchUpdate(formId=result["formId"], body=NEW_QUESTION).execute()
 
 
-def textQuestion(form_service, idx, title, result):
+def textQuestion(
+    form_service, 
+    idx, 
+    result, 
+    title, 
+    description='', 
+    required=True, 
+    paragraph=True
+    ):
     """
     - 記述回答を求める質問を作成
     """
@@ -119,14 +127,14 @@ def textQuestion(form_service, idx, title, result):
                     "title": title,
 
                     # description
-                    # "description": description,
+                    "description": description,
 
                     # questionItem:=question 
                     "questionItem": {
                         "question": {
-                                "required": True,
+                                "required": required,
                                 "textQuestion": {
-                                    "paragraph": True,
+                                    "paragraph": paragraph,
                                 }
                         }
                     },
@@ -141,7 +149,16 @@ def textQuestion(form_service, idx, title, result):
     question_setting = form_service.forms().batchUpdate(formId=result["formId"], body=NEW_QUESTION).execute()
 
 
-def scaleQuestion(form_service, idx, title, result):
+def scaleQuestion(
+    form_service, 
+    idx, 
+    result, 
+    title, 
+    description='', 
+    required=True, 
+    low=0, 
+    high=5
+    ):
     """
     - 均等目盛りの質問を作成
     """
@@ -154,15 +171,15 @@ def scaleQuestion(form_service, idx, title, result):
                     "title": title,
 
                     # description
-                    # "description": description,
+                    "description": description,
 
                     # questionItem:=question 
                     "questionItem": {
                         "question": {
-                                "required": True,
+                                "required": required,
                                 "scaleQuestion": {
-                                    "low": 0,
-                                    "high": 5,
+                                    "low": low,
+                                    "high": high,
                                 }
                         }
                     },

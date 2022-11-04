@@ -3,7 +3,7 @@ import  os
 import  sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from    src.utilFunctions   import checkOAuth, createForm, sectionStart, scaleQuestion, textQuestion, updateForm
-from    src.dataFunctions   import getCSVdata, getColumns
+from    src.dataFunctions   import getColumns
 
 ###
 # 0.
@@ -27,7 +27,7 @@ form_file_name = "form_22110106"
 result = createForm(form_service, form_title, form_file_name)
 
 # Updates the form (Adds description)
-updateForm(form_service, form_title, form_file_name, form_descripition, result)
+updateForm(form_service, result, form_title, form_file_name, form_descripition)
 
 ###
 # 2. 
@@ -64,18 +64,19 @@ for i, (presenter, grade, team) in enumerate(zip(presenters, grades, teams)):
     sectionStart(
         form_service, 
         idx, 
+        result,
         f'{team}班 {grade} {presenter}さん', 
-        section_description,
-        result)
+        section_description
+        )
     
     # incliment
     idx += 1
 
     for j, question in enumerate(questions):
         if question==questions[-1]:
-            textQuestion(form_service, idx, question, result)
+            textQuestion(form_service, idx, result, question)
         else:
-            scaleQuestion(form_service, idx, question, result)
+            scaleQuestion(form_service, idx, result, question)
         
         # incliment
         idx+=1
