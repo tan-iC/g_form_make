@@ -25,21 +25,6 @@
 
     - 各機能を実装したファイル（py）
 
-## 備考
-
-1. VPNなどを使っている状態だとサーバまでたどり着かないことがある
-
-## 参考文献
-
-1. <https://developers.google.com/forms/api>
-1. <https://console.developers.google.com/>
-1. <https://developers.google.com/forms/api/reference/rest/v1/forms>
-1. <https://github.com/googleworkspace/python-samples/tree/main/forms/snippets>
-1. <https://www.ka-net.org/blog/?p=14488>
-1. <https://omohikane.com/python_no_module_oauth2client/>
-1. <https://www.tdi.co.jp/miso/google-forms-api-2>
-
-
 ## Google Forms API
 
 - API paramater
@@ -56,7 +41,6 @@
 
 ## 備考
 
-1. フォーム作成を行うためにはOAuth認証 [[2](https://console.developers.google.com/)] が必要
 1. VPNなどを使っている状態だとサーバまでたどり着かないことがある
 
 ## 参考文献
