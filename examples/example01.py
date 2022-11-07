@@ -3,7 +3,6 @@ import  os
 import  sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from    src.utilFunctions   import checkOAuth, createForm, sectionStart, scaleQuestion, textQuestion, updateForm
-from    src.dataFunctions   import getColumns
 
 ###
 # 0.
@@ -15,13 +14,10 @@ form_service = checkOAuth()
 # 1. 
 ###
 
-form_descripition =\
-"""2022/11/30
-Comment sheet about the 2nd midterm presentation
-第二回中間発表に関するコメントシート"""
+form_title = "Form Title"
+form_file_name = "Form File Name"
+form_descripition ="""Form Description"""
 
-form_title = "第二回中間発表"
-form_file_name = "form_22110106"
 
 # Creates the initial form
 result = createForm(form_service, form_title, form_file_name)
@@ -33,50 +29,34 @@ updateForm(form_service, result, form_title, form_file_name, form_descripition)
 # 2. 
 ###
 
-section_description =\
-"""If you are the presenter himself/herself, or if you were not able to attend, please enter 0.
-Also, DON'T enter 0 for presentations that you attended.\n
-発表者自身の場合、聴講できなかった場合は、0を記入してください。
-また、聴講した発表には0を記入しないでください。"""
+section_description ="""Section Description"""
 
-# get data from csv
-csv_name = "information"
-column_names = ["名前", "学年", "班"]
-columns = getColumns(csv_name, column_names)
+# section num
+n = 4
 
-presenters = columns[0]
-grades = columns[1]
-teams = columns[2]
-
-# questions
-questions = [
-    "Research progress: 研究の進捗",
-    "Presentation quality: プレゼンの質",
-    "Q&A quality: 質疑応答の質",
-    "Resume quality: レジュメの質",
-    "Comment: コメント"
-    ]
+# question num
+m = 4
 
 # make questions into the form
 idx = 0
-for i, (presenter, grade, team) in enumerate(zip(presenters, grades, teams)):
+for i in range(n):
 
     sectionStart(
         form_service, 
         idx, 
         result,
-        f'{team}班 {grade} {presenter}さん', 
+        f'Section #{i}', 
         section_description
         )
     
     # incliment
     idx += 1
 
-    for j, question in enumerate(questions):
-        if question==questions[-1]:
-            textQuestion(form_service, idx, result, question)
+    for j in range(m):
+        if j == (m-1):
+            textQuestion(form_service, idx, result, f'Question #{i}-{j}')
         else:
-            scaleQuestion(form_service, idx, result, question)
+            scaleQuestion(form_service, idx, result, f'Question #{i}-{j}')
         
         # incliment
         idx+=1

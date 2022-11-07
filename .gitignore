@@ -12,3 +12,5 @@ test.py
 my_form*.py
 formId.txt
 form_*
+example02.py
+dataFunction.py
