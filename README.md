@@ -1,5 +1,9 @@
 # g_form_make
 
+## 環境
+
+`pip install -r requirements.txt`
+
 ## 概要
 
 1. Google Forms API [[1](https://developers.google.com/forms/api)] を利用し、PythonでGoogle formを作成する
